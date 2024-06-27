@@ -59,6 +59,7 @@ export default function Home() {
       }
 
       const data = await response.json();
+      console.log(data.matches)
       setMatches(data.matches || []);
 
       if (data.matches && data.matches.length > 0) {
@@ -89,7 +90,6 @@ export default function Home() {
       }
 
       const data = await response.json();
-      console.log(data.teams)
       setTeams(data.teams || []);
     } catch (error) {
       console.error('Erro ao carregar as partidas:', error);
@@ -97,25 +97,51 @@ export default function Home() {
   };
 
   const handleMatchdayChange = async (event) => {
-    setMatches([]);
-    const selectedMatchday = parseInt(event.target.value);
-    setSelectedMatchday(selectedMatchday);
+    // setMatches([]);
+    // const selectedMatchday = parseInt(event.target.value);
+    // setSelectedMatchday(selectedMatchday);
 
-    try {
-      const response = await fetch(`/api/competitions/${id}/matches?matchday=${selectedMatchday}`, {
-        headers: {
-          'X-Auth-Token': '6311a66f5f8746fd8860a5de6173f49f',
-        },
-      });
+    // try {
+    //   const response = await fetch(`/api/competitions/${id}/matches?matchday=${selectedMatchday}`, {
+    //     headers: {
+    //       'X-Auth-Token': '6311a66f5f8746fd8860a5de6173f49f',
+    //     },
+    //   });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch matches for the matchday');
+    //   if (!response.ok) {
+    //     throw new Error('Failed to fetch matches for the matchday');
+    //   }
+
+    //   const data = await response.json();
+    //   setMatches(data.matches || []);
+    // } catch (error) {
+    //   console.error('Error fetching matches for the matchday:', error);
+    // }
+    if (event.target.value !== '') {
+      const mathday = parseInt(event.target.value);
+
+      const filteredMatches = matches.filter(
+        (match) => match.matchday === mathday
+      );
+
+      setMatches(filteredMatches);
+    } else {
+      try {
+        const response = await fetch(`/api/competitions?id=${id}`, {
+          headers: {
+            'X-Auth-Token': '6311a66f5f8746fd8860a5de6173f49f',
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error('Falha ao buscar partidas');
+        }
+
+        const data = await response.json();
+        setMatches(data.matches || []);
+      } catch (error) {
+        console.error('Erro ao carregar as partidas:', error);
       }
-
-      const data = await response.json();
-      setMatches(data.matches || []);
-    } catch (error) {
-      console.error('Error fetching matches for the matchday:', error);
     }
   };
 
@@ -171,7 +197,6 @@ export default function Home() {
                 {teams.map((option) => (
                   <option key={option.id} value={option.id}>
                     <HStack align="center">
-                      <Image src={option.crest} boxSize="20px" alt={option.name} mx={2} />
                       <Text>{option.name}</Text>
                     </HStack>
                   </option>
@@ -210,6 +235,9 @@ export default function Home() {
                 </HStack>
                 <Text mt={2} textAlign="center">
                   {new Date(match.utcDate).toLocaleString()}
+                </Text>
+                <Text mt={2} textAlign="center">
+                  Rodada {match.matchday}
                 </Text>
               </Box>
             ))}
