@@ -2,7 +2,19 @@ Site com o objetivo de mostrar os jogos de futebol de uma competição, podendo 
 
 Link para o site: https://jogosfutebol.netlify.app/
 
-Instalação
+Instalação:
+
+Instalaççao de dependencias e arquivos:
+
+npm install
+
+Iniciar projeto:
+
+npm run dev
+
+Build:
+
+npm run build
 
 Tecnologias: ReactJs, NextJS, ChakraUI
 
